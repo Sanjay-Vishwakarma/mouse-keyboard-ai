@@ -15,3 +15,5 @@ should be sent to the PC.
 hello world I'm gathering all perfect person 
 
 Avoid unnecessary features. Provide complete working source code and simple installation instructions for Android and Windows/Linux.
+
+

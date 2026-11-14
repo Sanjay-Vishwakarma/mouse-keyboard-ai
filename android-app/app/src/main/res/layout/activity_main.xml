@@ -3,87 +3,187 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
-    <!-- PC address + connect -->
+    <!-- Top bar: app name + connection status in the corner -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/addressInput"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:autofillHints="none"
-            android:hint="@string/address_hint"
-            android:imeOptions="actionGo"
-            android:inputType="textUri"
-            android:maxLines="1" />
+            android:text="@string/app_name"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/connectButton"
+        <TextView
+            android:id="@+id/statusChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/connect" />
+            android:background="@drawable/chip_bg"
+            android:clickable="true"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="7dp"
+            android:text="@string/not_connected"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:drawableStart="@drawable/status_dot" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/not_connected"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
-
-    <!-- Touchpad -->
-    <com.example.phonemouse.TouchpadView
-        android:id="@+id/touchpad"
+    <!-- Touchpad area -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:layout_weight="1"
-        android:background="@drawable/touchpad_bg"
-        android:contentDescription="@string/touchpad" />
+        android:layout_marginTop="14dp"
+        android:layout_weight="1">
 
-    <!-- Mouse buttons -->
+        <com.example.phonemouse.TouchpadView
+            android:id="@+id/touchpad"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/touchpad_bg"
+            android:contentDescription="@string/touchpad" />
+
+        <!-- Scroll strip on the right edge (visual only; touches go to the touchpad) -->
+        <TextView
+            android:layout_width="@dimen/scroll_strip_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:background="@drawable/scroll_strip_bg"
+            android:gravity="center"
+            android:text="@string/scroll_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginEnd="@dimen/scroll_zone_width"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:text="@string/touchpad_hint"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <!-- Shown until connected -->
+        <LinearLayout
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/touchpad_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_monitor"
+                android:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/overlayTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/not_connected"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/overlaySubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="@string/overlay_hint"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/connectButton"
+                style="@style/PrimaryButton"
+                android:layout_width="220dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="28dp"
+                android:text="@string/connect" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Bottom controls, within thumb reach -->
     <LinearLayout
+        android:id="@+id/controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/leftButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/left_click" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/rightButton"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/leftButton"
+                style="@style/PadButton"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/left_click" />
+
+            <Button
+                android:id="@+id/rightButton"
+                style="@style/PadButton"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="@string/right_click" />
+        </LinearLayout>
+
+        <!-- Typing: tapping opens the phone's own keyboard -->
+        <com.example.phonemouse.TypingEditText
+            android:id="@+id/typingInput"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="@string/right_click" />
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:background="@drawable/field_bg"
+            android:drawableStart="@drawable/ic_keyboard"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/text_secondary"
+            android:hint="@string/typing_hint"
+            android:imeOptions="actionSend|flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="16sp" />
     </LinearLayout>
-
-    <!-- Typing: tapping opens the phone's own keyboard -->
-    <com.example.phonemouse.TypingEditText
-        android:id="@+id/typingInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:autofillHints="none"
-        android:hint="@string/typing_hint"
-        android:imeOptions="actionSend|flagNoExtractUi"
-        android:inputType="text"
-        android:maxLines="1" />
 </LinearLayout>

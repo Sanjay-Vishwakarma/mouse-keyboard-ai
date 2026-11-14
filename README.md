@@ -1,4 +1,4 @@
-# Phone Mouse & Keyboard
+# PC Remote
 
 Use your Android phone as a wireless touchpad and keyboard for a Windows or Linux PC.
 
@@ -10,10 +10,18 @@ mouse-keyboard-ai/
 └── android-app/      Android app (Kotlin) — open this folder in Android Studio
 ```
 
-**How to use the app**
-- **Touchpad:** drag one finger to move the cursor. Tap = left click, two-finger tap = right click.
-- **Left / Right** buttons: mouse clicks.
-- **"Tap here to type on PC"**: opens your phone's normal keyboard (Gboard etc.). Whatever you type shows up on the PC. Backspace works. The keyboard's Enter/Send key presses Enter on the PC.
+**How to use the app** (everything works with one thumb)
+| On the touchpad | Does |
+|---|---|
+| Drag | Move the cursor |
+| Tap | Left click (tap twice = double click) |
+| Hold | Right click (phone vibrates) |
+| Double-tap, then drag | Select text / drag windows |
+| Drag on the **SCROLL** strip at the right edge | Scroll up/down |
+
+- **Left click / Right click** buttons at the bottom do the same as their names.
+- **"Tap here to type on PC"** opens your phone's own keyboard (Gboard etc.). What you type appears on the PC; Backspace works; the keyboard's Enter/Send key presses Enter.
+- The status chip in the top-right corner shows **Connected / Connecting… / Not connected**. Tap it to connect or disconnect.
 
 The phone and PC must be on the **same Wi‑Fi**, or the PC must be connected to the **phone's hotspot**.
 
@@ -64,8 +72,9 @@ To use a different port: `python server.py 6000`, then enter `IP:6000` in the ap
 
 ## 3. Connect
 1. Start `server.py` on the PC.
-2. Open **Phone Mouse** on the phone, type the IP the server printed (e.g. `192.168.1.5`), and tap **Connect**.
-3. The status turns green: "Connected". You're done.
+2. Open **PC Remote** on the phone and tap **Connect**.
+3. A popup asks for the IP: type the one the server printed (e.g. `192.168.1.5`) and tap **Connect**. The app remembers it for next time.
+4. The corner chip turns green, **● Connected**, and the touchpad unlocks. You're done.
 
 ---
 

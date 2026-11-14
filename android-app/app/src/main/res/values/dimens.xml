@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="scroll_strip_width">34dp</dimen>
+    <!-- touches this close to the right edge scroll instead of moving the cursor -->
+    <dimen name="scroll_zone_width">58dp</dimen>
+</resources>

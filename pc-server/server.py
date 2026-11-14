@@ -1,5 +1,5 @@
 """
-Phone Mouse & Keyboard - PC server.
+PC Remote - PC server.
 
 Receives newline-delimited JSON commands from the Android app over TCP
 and turns them into mouse / keyboard actions with PyAutoGUI.
@@ -22,6 +22,7 @@ except ImportError:
     pyperclip = None
 
 DEFAULT_PORT = 5050
+WHEEL_NOTCH = 120 if sys.platform.startswith("win") else 1
 
 pyautogui.FAILSAFE = False  # don't abort when the cursor hits a screen corner
 pyautogui.PAUSE = 0         # no artificial delay between actions -> smooth motion
@@ -53,14 +54,30 @@ def type_text(text):
         print("  (skipped non-ASCII text - `pip install pyperclip` to enable it)")
 
 
-def handle(cmd):
+def button_of(cmd):
+    button = cmd.get("button", "left")
+    return button if button in ("left", "right") else "left"
+
+
+def handle(cmd, held):
+    """Run one command. `held` is the set of mouse buttons this client is holding down."""
     kind = cmd.get("type")
     if kind == "move":
         pyautogui.moveRel(int(cmd["dx"]), int(cmd["dy"]))
     elif kind == "click":
-        button = cmd.get("button", "left")
-        if button in ("left", "right"):
-            pyautogui.click(button=button)
+        pyautogui.click(button=button_of(cmd))
+    elif kind == "scroll":
+        # one step = one mouse-wheel notch (Windows counts a notch as 120 units)
+        steps = int(cmd.get("steps", 0))
+        pyautogui.scroll(steps * WHEEL_NOTCH)
+    elif kind == "down":
+        button = button_of(cmd)
+        pyautogui.mouseDown(button=button)
+        held.add(button)
+    elif kind == "up":
+        button = button_of(cmd)
+        pyautogui.mouseUp(button=button)
+        held.discard(button)
     elif kind == "text":
         type_text(cmd.get("text", ""))
     elif kind == "key":
@@ -73,6 +90,7 @@ def serve_client(conn, addr):
     print(f"Connected: {addr[0]}")
     conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     buffer = b""
+    held = set()
     try:
         with conn:
             while True:
@@ -85,11 +103,14 @@ def serve_client(conn, addr):
                     if not line.strip():
                         continue
                     try:
-                        handle(json.loads(line.decode("utf-8")))
+                        handle(json.loads(line.decode("utf-8")), held)
                     except (ValueError, KeyError, TypeError) as e:
                         print(f"  bad command {line!r}: {e}")
     except OSError:
         pass
+    finally:
+        for button in held:  # never leave a button stuck down if the phone drops mid-drag
+            pyautogui.mouseUp(button=button)
     print(f"Disconnected: {addr[0]}")
 
 
@@ -101,7 +122,7 @@ def main():
     server.listen(1)
 
     print("=" * 44)
-    print(" Phone Mouse & Keyboard server is running")
+    print(" PC Remote server is running")
     print(f" Enter this in the app:  {local_ip()}:{port}")
     print(" Press Ctrl+C to stop.")
     print("=" * 44)

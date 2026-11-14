@@ -32,6 +32,12 @@ class Connection(private val onStatus: (connected: Boolean, message: String) -> 
 
     fun click(button: String) = send(JSONObject().put("type", "click").put("button", button))
 
+    fun scroll(steps: Int) = send(JSONObject().put("type", "scroll").put("steps", steps))
+
+    fun mouseDown() = send(JSONObject().put("type", "down").put("button", "left"))
+
+    fun mouseUp() = send(JSONObject().put("type", "up").put("button", "left"))
+
     fun text(text: String) = send(JSONObject().put("type", "text").put("text", text))
 
     fun key(key: String, count: Int = 1) =

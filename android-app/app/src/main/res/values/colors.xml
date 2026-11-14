@@ -1,9 +1,13 @@
 <resources>
-    <color name="background">#FF121212</color>
-    <color name="surface">#FF1E1E1E</color>
-    <color name="outline">#FF2E2E2E</color>
+    <color name="background">#FF101114</color>
+    <color name="surface">#FF1A1C21</color>
+    <color name="surface_raised">#FF24272E</color>
+    <color name="outline">#FF2C3038</color>
     <color name="accent">#FF4F8EF7</color>
-    <color name="text_primary">#FFEDEDED</color>
-    <color name="text_secondary">#FF9A9A9A</color>
-    <color name="status_ok">#FF4CC38A</color>
+    <color name="text_primary">#FFEDEFF3</color>
+    <color name="text_secondary">#FF9AA0AB</color>
+    <color name="text_hint">#FF666C77</color>
+    <color name="status_ok">#FF3DD68C</color>
+    <color name="status_wait">#FFF5B841</color>
+    <color name="status_off">#FF7A808A</color>
 </resources>

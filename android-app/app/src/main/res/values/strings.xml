@@ -1,11 +1,28 @@
 <resources>
-    <string name="app_name">Phone Mouse</string>
-    <string name="address_hint">PC IP, e.g. 192.168.1.5</string>
+    <string name="app_name">PC Remote</string>
+
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="connected">Connected</string>
+    <string name="connecting">Connecting…</string>
     <string name="not_connected">Not connected</string>
+    <string name="connected_to">Connected to %1$s</string>
+    <string name="connecting_to">Connecting to %1$s…</string>
+
+    <string name="overlay_hint">Start server.py on your PC,\nthen tap Connect.</string>
+    <string name="connect_title">Connect to PC</string>
+    <string name="connect_message">Enter the IP address shown by server.py on your PC.</string>
+    <string name="connect_note">Phone and PC must be on the same Wi-Fi or hotspot.</string>
+    <string name="ip_hint">e.g. 192.168.1.5</string>
+    <string name="invalid_ip">Enter a valid IP, like 192.168.1.5</string>
+
     <string name="touchpad">Touchpad</string>
-    <string name="left_click">Left</string>
-    <string name="right_click">Right</string>
+    <string name="touchpad_hint">Tap = click · Hold = right-click\nDouble-tap and drag = select / drag</string>
+    <string name="scroll_label">▲\n\nS\nC\nR\nO\nL\nL\n\n▼</string>
+    <string name="left_click">Left click</string>
+    <string name="right_click">Right click</string>
     <string name="typing_hint">Tap here to type on PC</string>
+    <string name="typing_hint_disabled">Connect to start typing</string>
 </resources>
