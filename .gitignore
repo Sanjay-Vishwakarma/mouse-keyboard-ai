@@ -1,6 +1,16 @@
+# Android
 .gradle/
 build/
 local.properties
 .idea/
 *.iml
+
+# Python / PyInstaller
 __pycache__/
+.venv/
+.venv-linux/
+pc-server/build/
+pc-server/build-linux/
+*.spec
+
+# release/ (APK + executables) IS committed on purpose

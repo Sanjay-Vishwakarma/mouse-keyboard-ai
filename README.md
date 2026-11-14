@@ -2,15 +2,28 @@
 
 Use your Android phone as a wireless touchpad and keyboard for a Windows or Linux PC.
 
-```
-mouse-keyboard-ai/
-├── pc-server/        Python server (runs on the PC)
-│   ├── server.py
-│   └── requirements.txt
-└── android-app/      Android app (Kotlin) — open this folder in Android Studio
-```
+## Quick start (no Python, no Android Studio needed)
 
-**How to use the app** (everything works with one thumb)
+Ready-made files are in the [`release/`](release/) folder:
+
+| File | For | How to run |
+|---|---|---|
+| `PC-Remote.apk` | Android phone | Copy to the phone, open it, allow "Install unknown apps" |
+| `PCRemoteServer.exe` | Windows 10/11 | Double-click |
+| `PCRemoteServer-linux` | Linux (Ubuntu 20.04+, Debian 11+, Mint, Fedora …) | Double-click, or `chmod +x PCRemoteServer-linux && ./PCRemoteServer-linux` |
+
+1. Start the server on the PC. A small window opens and shows the IP to use, e.g. **192.168.1.5**.
+   - **Windows:** the first time, Windows may show *"Windows protected your PC"*: click **More info → Run anyway**. When the Firewall asks, click **Allow** (Private networks).
+   - **Linux:** if double-click doesn't start it, right-click → *Properties → Permissions → Allow executing as program*.
+2. Open **PC Remote** on the phone and tap **Connect**. Type the IP in the popup and tap **Connect**. The app remembers it for next time.
+3. The corner chip turns green, **● Connected**. That's it.
+
+The server window shows **● Connected** as well. Use **Minimize** to hide it in the taskbar while you work, and **Stop & Exit** (or close the window) to stop it.
+
+The phone and PC must be on the **same Wi‑Fi**, or the PC must be connected to the **phone's hotspot**.
+
+## Using the app (one thumb is enough)
+
 | On the touchpad | Does |
 |---|---|
 | Drag | Move the cursor |
@@ -19,72 +32,55 @@ mouse-keyboard-ai/
 | Double-tap, then drag | Select text / drag windows |
 | Drag on the **SCROLL** strip at the right edge | Scroll up/down |
 
-- **Left click / Right click** buttons at the bottom do the same as their names.
-- **"Tap here to type on PC"** opens your phone's own keyboard (Gboard etc.). What you type appears on the PC; Backspace works; the keyboard's Enter/Send key presses Enter.
-- The status chip in the top-right corner shows **Connected / Connecting… / Not connected**. Tap it to connect or disconnect.
-
-The phone and PC must be on the **same Wi‑Fi**, or the PC must be connected to the **phone's hotspot**.
+- **Left click / Right click** buttons at the bottom work like mouse buttons.
+- **"Tap here to type on PC"** opens your phone's own keyboard (Gboard etc.). What you type appears on the PC. Backspace works, and the keyboard's Enter/Send key presses Enter.
+- Tap the status chip in the top-right corner to connect or disconnect.
 
 ---
 
-## 1. PC setup
+## Project layout
 
-### Windows
-1. Install Python 3 from https://python.org (tick **"Add Python to PATH"**).
-2. Open a terminal in the `pc-server` folder and run:
-   ```
-   pip install -r requirements.txt
-   python server.py
-   ```
-3. When Windows Firewall asks, click **Allow** (Private networks).
-4. The server prints something like `Enter this in the app: 192.168.1.5:5050`.
+```
+mouse-keyboard-ai/
+├── release/                 ready-to-run APK + Windows/Linux executables
+├── pc-server/               Python server (PyAutoGUI + Tkinter window)
+│   ├── server.py
+│   ├── requirements.txt
+│   ├── build_windows.bat    -> release/PCRemoteServer.exe
+│   ├── build_linux.sh       -> release/PCRemoteServer-linux   (run on Linux)
+│   ├── build_linux_docker.sh  same, but inside Docker (from any OS)
+│   └── make_icon.py         generates assets/icon.png + icon.ico
+└── android-app/             Android app (Kotlin), open in Android Studio
+```
 
-### Linux (Ubuntu/Debian)
-1. Install the packages and run the server:
-   ```bash
-   sudo apt install python3-pip python3-tk python3-dev xclip
-   cd pc-server
-   pip3 install -r requirements.txt      # add --break-system-packages on newer distros, or use a venv
-   python3 server.py
-   ```
-2. If you use a firewall: `sudo ufw allow 5050/tcp`
-3. **PyAutoGUI needs an X11 session.** On Ubuntu with Wayland, log out, click the gear icon on the login screen and pick **"Ubuntu on Xorg"**.
+## Running the server from source
 
-To use a different port: `python server.py 6000`, then enter `IP:6000` in the app.
+```bash
+cd pc-server
+pip install -r requirements.txt
+python server.py              # window
+python server.py --console    # terminal only
+python server.py 6000         # other port (then enter 192.168.1.5:6000 in the app)
+```
+Linux needs: `sudo apt install python3-tk python3-dev xclip`.
 
----
+## Rebuilding
 
-## 2. Android setup
-
-### Option A: Android Studio (recommended)
-1. Install Android Studio: https://developer.android.com/studio
-2. **File → Open** → select the `android-app` folder. Wait for Gradle sync to finish.
-3. On the phone, turn on **Developer options → USB debugging** (Settings → About phone → tap *Build number* 7 times).
-4. Connect the phone with USB and press **Run ▶**.
-
-### Option B: Build an APK and install it
-1. In Android Studio: **Build → Build App Bundle(s) / APK(s) → Build APK(s)**
-   (or from a terminal in `android-app`: `gradlew assembleDebug`).
-2. The APK is created at `android-app/app/build/outputs/apk/debug/app-debug.apk`.
-3. Copy it to the phone, open it, and allow "Install unknown apps" when asked.
-
----
-
-## 3. Connect
-1. Start `server.py` on the PC.
-2. Open **PC Remote** on the phone and tap **Connect**.
-3. A popup asks for the IP: type the one the server printed (e.g. `192.168.1.5`) and tap **Connect**. The app remembers it for next time.
-4. The corner chip turns green, **● Connected**, and the touchpad unlocks. You're done.
+- **Windows exe:** double-click `pc-server/build_windows.bat` (needs Python 3).
+- **Linux binary:** on Linux run `pc-server/build_linux.sh` (needs `python3-venv python3-tk`), or from any OS with Docker run `pc-server/build_linux_docker.sh`. The Docker build uses Debian 11, so the binary runs on older distros too.
+- **APK:** open `android-app` in Android Studio, then **Build → Build APK(s)**, or run `gradlew assembleDebug` in `android-app`. Output: `android-app/app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
 ## Troubleshooting
+
 | Problem | Fix |
 |---|---|
-| "Could not connect" | Check that both devices are on the same network and the IP is correct. Allow Python through the firewall (Windows: set the Wi‑Fi network to *Private*, or run `netsh advfirewall firewall add rule name="Phone Mouse" dir=in action=allow protocol=TCP localport=5050` as admin). |
+| "Could not connect" | Check both devices are on the same network and the IP is right. Allow the server through the firewall (Windows: set the Wi‑Fi network to *Private*, or run as admin: `netsh advfirewall firewall add rule name="PC Remote" dir=in action=allow protocol=TCP localport=5050`). Linux with ufw: `sudo ufw allow 5050/tcp`. |
+| "Could not start on port 5050" | The server is already running (check the taskbar), or another program uses the port. |
+| Linux: "cannot control the mouse and keyboard" | You're on Wayland. Log out, click the gear icon on the login screen, choose **"Ubuntu on Xorg"**. |
 | Cursor too slow or fast | Change `sensitivity` in `android-app/.../TouchpadView.kt` (default `1.6`). |
-| Typing doesn't reach some apps on Windows | Apps running as Administrator won't accept input from a normal process. Run the server as Administrator too. |
-| Hindi or emoji not typed | PyAutoGUI only types English (ASCII) characters. Other text is pasted via the clipboard, which needs `pyperclip` (it's in requirements.txt; on Linux it also needs `xclip`). |
-| Nothing happens on Linux | Make sure you're on an X11 (Xorg) session, not Wayland. |
+| Typing doesn't reach some apps on Windows | Apps running as Administrator don't accept input from normal programs. Right-click the server → *Run as administrator*. |
+| Hindi or emoji not typed on Linux | Install `xclip`: `sudo apt install xclip`. |
 
 The connection is plain TCP with no password, so use it only on your own trusted network.
