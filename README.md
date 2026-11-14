@@ -18,7 +18,7 @@ Ready-made files are in the [`release/`](release/) folder:
 2. Open **PC Remote** on the phone and tap **Connect**. Type the IP in the popup and tap **Connect**. The app remembers it for next time.
 3. The corner chip turns green, **● Connected**. That's it.
 
-The server window shows **● Connected** as well. Use **Minimize** to hide it in the taskbar while you work, and **Stop & Exit** (or close the window) to stop it.
+The server window shows **● Connected** as well. Minimize it with the window's normal **–** button while you work, and use **Stop & Exit** (or close the window) to stop it.
 
 The phone and PC must be on the **same Wi‑Fi**, or the PC must be connected to the **phone's hotspot**.
 

@@ -311,7 +311,6 @@ class App:
         buttons = tk.Frame(outer, bg=self.BG)
         buttons.pack(fill="x", pady=(px(14), 0))
         self._button(buttons, "Stop & Exit", self.quit, self.DANGER, "#FFFFFF").pack(side="right")
-        self._button(buttons, "Minimize", self.root.iconify, self.RAISED).pack(side="right", padx=(0, px(8)))
 
     def _center(self):
         self.root.update_idletasks()
