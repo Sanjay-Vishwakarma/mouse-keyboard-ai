@@ -6,10 +6,8 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -27,6 +25,7 @@ class MainActivity : Activity() {
     private lateinit var connectButton: Button
     private lateinit var controls: View
     private lateinit var typingInput: TypingEditText
+    private lateinit var clearButton: View
 
     private val prefs by lazy { getSharedPreferences("settings", MODE_PRIVATE) }
 
@@ -48,6 +47,7 @@ class MainActivity : Activity() {
         connectButton = findViewById(R.id.connectButton)
         controls = findViewById(R.id.controls)
         typingInput = findViewById(R.id.typingInput)
+        clearButton = findViewById(R.id.clearButton)
 
         connection = Connection { connected, message ->
             runOnUiThread { onConnectionChanged(connected, message) }
@@ -187,6 +187,7 @@ class MainActivity : Activity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
+                clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
                 if (!ignoreTextChange) syncText(s?.toString() ?: "")
             }
         })
@@ -194,22 +195,17 @@ class MainActivity : Activity() {
         // Backspace on an empty field still deletes on the PC.
         typingInput.onEmptyBackspace = { connection.key("backspace") }
 
-        // Keyboard's Enter / Send key -> Enter on the PC, then clear the field.
-        typingInput.setOnEditorActionListener { _, actionId, event ->
-            val isEnter = actionId == EditorInfo.IME_ACTION_SEND ||
-                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER &&
-                    event.action == KeyEvent.ACTION_DOWN)
-            if (isEnter) {
-                connection.key("enter")
-                clearTypingField()
-            }
-            true // keep the keyboard open
+        // ✕ clears only the phone's field; text already typed on the PC stays.
+        clearButton.setOnClickListener {
+            clearTypingField()
+            typingInput.openKeyboard()
         }
     }
 
     /**
      * Compares the field with what was already sent and sends only the difference:
      * backspaces for removed characters, then the newly added text.
+     * A new line (keyboard's Enter key) is sent as the Enter key.
      * This also handles keyboard autocorrect / suggestions replacing a word.
      */
     private fun syncText(now: String) {
@@ -217,7 +213,10 @@ class MainActivity : Activity() {
         val removed = sentText.codePointCount(common, sentText.length)
         val added = now.substring(common)
         if (removed > 0) connection.key("backspace", removed)
-        if (added.isNotEmpty()) connection.text(added)
+        added.split('\n').forEachIndexed { i, part ->
+            if (i > 0) connection.key("enter")
+            if (part.isNotEmpty()) connection.text(part)
+        }
         sentText = now
     }
 
@@ -226,6 +225,7 @@ class MainActivity : Activity() {
         typingInput.text.clear()
         ignoreTextChange = false
         sentText = ""
+        clearButton.visibility = View.GONE
     }
 
     // ---------------------------------------------------------------- helpers

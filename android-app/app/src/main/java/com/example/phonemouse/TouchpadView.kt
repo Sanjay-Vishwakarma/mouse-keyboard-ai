@@ -16,6 +16,7 @@ import kotlin.math.min
  *  - hold                   -> right click  (also: two-finger tap)
  *  - double-tap and drag    -> drag / select (hold left button while moving)
  *  - drag on the right edge -> scroll
+ *  - two-finger drag        -> scroll (anywhere)
  */
 class TouchpadView @JvmOverloads constructor(
     context: Context,
@@ -54,6 +55,7 @@ class TouchpadView @JvmOverloads constructor(
     private var remX = 0f
     private var remY = 0f
     private var scrollAcc = 0f
+    private var lastAvgY = 0f
 
     private var lastTapUpTime = 0L
     private var dragCandidate = false
@@ -80,12 +82,20 @@ class TouchpadView @JvmOverloads constructor(
                 remX = 0f; remY = 0f; scrollAcc = 0f
                 mode = if (event.x >= width - scrollZoneWidth) Mode.SCROLL else Mode.MOVE
                 dragCandidate = mode == Mode.MOVE && event.eventTime - lastTapUpTime < DOUBLE_TAP_MS
-                postDelayed(longPressAction, LONG_PRESS_MS)
+                // no hold-to-right-click on the scroll strip, so a slow start still scrolls
+                if (mode == Mode.MOVE) postDelayed(longPressAction, LONG_PRESS_MS)
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
                 maxPointers = maxOf(maxPointers, event.pointerCount)
                 removeCallbacks(longPressAction)
+                lastAvgY = averageY(event, skipIndex = -1)
+                scrollAcc = 0f
+            }
+
+            MotionEvent.ACTION_POINTER_UP -> {
+                // a finger lifted: re-base so the remaining fingers don't cause a jump
+                lastAvgY = averageY(event, skipIndex = event.actionIndex)
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -97,8 +107,15 @@ class TouchpadView @JvmOverloads constructor(
                         listener?.onDragStart()
                     }
                 }
-                if (maxPointers == 1 && !longPressed) {
-                    if (mode == Mode.SCROLL) scroll(event.y - lastY) else move(event.x - lastX, event.y - lastY)
+                when {
+                    longPressed -> Unit
+                    maxPointers == 1 && mode == Mode.SCROLL -> scroll(event.y - lastY)
+                    maxPointers == 1 -> move(event.x - lastX, event.y - lastY)
+                    event.pointerCount >= 2 -> {
+                        val avgY = averageY(event, skipIndex = -1)
+                        scroll(avgY - lastAvgY)
+                        lastAvgY = avgY
+                    }
                 }
                 lastX = event.x; lastY = event.y
             }
@@ -148,6 +165,17 @@ class TouchpadView @JvmOverloads constructor(
         remX = fx - ix
         remY = fy - iy
         if (ix != 0 || iy != 0) listener?.onMove(ix, iy)
+    }
+
+    private fun averageY(event: MotionEvent, skipIndex: Int): Float {
+        var sum = 0f
+        var count = 0
+        for (i in 0 until event.pointerCount) {
+            if (i == skipIndex) continue
+            sum += event.getY(i)
+            count++
+        }
+        return if (count > 0) sum / count else event.y
     }
 
     private fun scroll(dyPx: Float) {

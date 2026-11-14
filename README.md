@@ -30,10 +30,10 @@ The phone and PC must be on the **same Wi‑Fi**, or the PC must be connected to
 | Tap | Left click (tap twice = double click) |
 | Hold | Right click (phone vibrates) |
 | Double-tap, then drag | Select text / drag windows |
-| Drag on the **SCROLL** strip at the right edge | Scroll up/down |
+| Two-finger drag (anywhere), or drag on the **SCROLL** strip at the right edge | Scroll up/down |
 
 - **Left click / Right click** buttons at the bottom work like mouse buttons.
-- **"Tap here to type on PC"** opens your phone's own keyboard (Gboard etc.). What you type appears on the PC. Backspace works, and the keyboard's Enter/Send key presses Enter.
+- **"Tap here to type on PC"** opens your phone's own keyboard (Gboard etc.). What you type appears on the PC. Backspace works. The keyboard's **↵ Enter** key starts a new line in the app and presses Enter on the PC. **✕** clears the app's text box (text already on the PC stays).
 - Tap the status chip in the top-right corner to connect or disconnect.
 
 ---

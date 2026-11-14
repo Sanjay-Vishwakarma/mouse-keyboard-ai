@@ -165,25 +165,48 @@
                 android:text="@string/right_click" />
         </LinearLayout>
 
-        <!-- Typing: tapping opens the phone's own keyboard -->
-        <com.example.phonemouse.TypingEditText
-            android:id="@+id/typingInput"
+        <!-- Typing: tapping opens the phone's own keyboard. Multi-line, so the keyboard
+             shows an Enter key that starts a new line here and presses Enter on the PC. -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:autofillHints="none"
-            android:background="@drawable/field_bg"
-            android:drawableStart="@drawable/ic_keyboard"
-            android:drawablePadding="12dp"
-            android:drawableTint="@color/text_secondary"
-            android:hint="@string/typing_hint"
-            android:imeOptions="actionSend|flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_secondary"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.example.phonemouse.TypingEditText
+                android:id="@+id/typingInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="none"
+                android:background="@drawable/field_bg"
+                android:drawableStart="@drawable/ic_keyboard"
+                android:drawablePadding="12dp"
+                android:drawableTint="@color/text_secondary"
+                android:gravity="center_vertical|start"
+                android:hint="@string/typing_hint"
+                android:imeOptions="actionNone|flagNoExtractUi"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:minHeight="56dp"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="52dp"
+                android:paddingBottom="10dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/clearButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/clear_btn_bg"
+                android:contentDescription="@string/clear_text"
+                android:src="@drawable/ic_close"
+                android:tint="@color/text_secondary"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

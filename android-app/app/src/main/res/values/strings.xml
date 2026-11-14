@@ -19,7 +19,8 @@
     <string name="invalid_ip">Enter a valid IP, like 192.168.1.5</string>
 
     <string name="touchpad">Touchpad</string>
-    <string name="touchpad_hint">Tap = click · Hold = right-click\nDouble-tap and drag = select / drag</string>
+    <string name="touchpad_hint">Tap = click · Hold = right-click\nDouble-tap and drag = select / drag\nTwo fingers or right edge = scroll</string>
+    <string name="clear_text">Clear text</string>
     <string name="scroll_label">▲\n\nS\nC\nR\nO\nL\nL\n\n▼</string>
     <string name="left_click">Left click</string>
     <string name="right_click">Right click</string>
